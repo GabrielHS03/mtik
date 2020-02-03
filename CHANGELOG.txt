@@ -1,0 +1,103 @@
+2014-02-14 (14 FEB 2014)  VERSION 4.2.3  Aaron D. Gifford (http://www.aarongifford.com)
+ * Update to fetch() utility, along with some very minor some cosmetic changes
+
+2013-06-06 (06 JUN 2013)  VERSION 4.0.2  Aaron D. Gifford (http://www.aarongifford.com)
+                                         Bart Braem (http://www.lalunerouge.net/)
+ * Merged Bart Braem's implementation of timeouts and bumped up the version.  Thanks, Bart!
+ * Updated Rakefile to remove a bit of obsolescence
+
+2012-02-09 (09 FEB 2012)  VERSION 4.0.1  Aaron D. Gifford (http://www.aarongifford.com)
+ * Added os_version to connections.  Upon successful connect and login, the RouterOS
+   version is fetched and stored.  This will allow future updates to better support
+   some commands that differ (like fetch) depending on which RouterOS version is
+   installed on the device.
+
+2011-03-25 (25 MAR 2011)  VERSION 4.0.0  Aaron D. Gifford (http://www.aarongifford.com)
+ * Per user suggestion, added a new optional cancel parameter to the MTik#command()
+   method that will auto-cancel the supplied command after receiving the specified
+   number of '!re' reply sentences.  This is usful for executing a command that otherwise
+   will not terminate, but will keep sending output perpetually if not canceled.
+ * Spelling changes: :cancelled updated to :canceled   This means anyone who checked the
+   state of a request using :cancelled or 'cancelled' will need to update their code to
+   check for :canceled instead.
+ * Due to changing of spelling and adding a new parameter, I've bumped the major version
+   number to 4.x in case any users code might break.  This in spite of the fact that
+   there are no major new features added.
+ * I found 2-3 tiny bugs left over from the past change of request state from string
+   to symbol and fixed those, updated error messages to reflect state as a symbol,
+   eliminated a few redundant key?() calls, and fixed a replycounter initialization
+   typo (had set it to 1 instead of 0).
+
+2011-01-11 (11 JAN 2011)  VERSION 3.1.2  Aaron D. Gifford (http://www.aarongifford.com)
+ * Added source file encoding comments and updated the copyright notices
+ * Fixed a tiny bug in lib/mtik/connection.rb
+ * Changed MTik::Request@state member in lib/mtik/request.rb to Symbol instead of String
+ * Moved tikfetch.rb, tikcli.rb, and tikcommand.rb from examples/ to bin/ and removed
+   the .rb suffix -- left tikjson.rb behind in examples/
+ * Renamed a few variables that, with warnings enabled, Ruby complained were overlapping
+   or hiding outer variables of the same name to avoid the warning.
+
+2010-12-30 (30 DEC 2011)  VERSION 3.1.1  Aaron D. Gifford (http://www.aarongifford.com)
+ * Changed the tikfetch.rb utility so it no longer requires a destination filename
+   by default--it will use the supplied URL's final path element as a filename.  Also
+   updated the stats output a bit.
+
+2010-04-24 (24 APR 2010)  VERSION 3.1.0  Aaron D. Gifford (http://www.aarongifford.com)
+ * Added find_sentences() method to MTik::Reply -- just sugar to Array.select()
+ * Changed MTik::Connection.fetch() method to add an optional timeout parameter
+   which should not affect the API and should be backward compatible.  By default,
+   there is no inactivity timeout for downloads.  But if you set the timeout parameter
+   to a positive number, when a reply arrives and no progress/activity has been
+   made for timeout seconds, the command will be canceled.  This should help with
+   stalled downloads (i.e. the remote side has stopped sending but the TCP connection
+   remains open/active).
+ * Also add the MTik::Request object as a parameter to the MTik::Connection.fetch()
+   method's callback so that a script could use the request object to cancel the
+   command if needed.  Due to this change, I decided to bump the version to 3.1.0.
+ * Fixed RDoc formatting in several files, and added an RDocTask to the Rakefile
+
+2010-04-23 (23 APR 2010)  VERSION 3.0.5  Aaron D. Gifford (http://www.aarongifford.com)
+ * Double bug-fix (typo fix and logic fix) to request.rb thanks to Allan Eising and 
+   Søren Daugaard.  Thank you both for the patch!
+ * Added a brief sanity-check in request.rb to help spotlight logic errors.
+
+2010-04-09 (09 APR 2010)  VERSION 3.0.4  Aaron D. Gifford (http://www.aarongifford.com)
+ * Bug fix to lib/mtik.rb thanks to Allan Eising to the command validation regular
+   expression to permit the '-' character in a command.  Thanks!
+
+2010-03-11 (11 MAR 2010)  VERSION 3.0.3  Aaron D. Gifford (http://www.aarongifford.com)
+  * Bug fix to lib/mtik.rb command() method so when executing multiple commands
+    response array order matches command array order.
+  * Cosmetic change for hex encoding with a little simplification, and one very small
+    readability change in lib/mtik/connection.rb
+
+2010-02-05 (05 FEB 2010)  VERSION 3.0.2  Aaron D. Gifford (http://www.aarongifford.com)
+  * Typo fixes to example tikfetch.rb
+  * Multi-command functionality added to interactive client and to tikcommand.rb example
+  * Removed kludge path stuff for author's broken FreeBSD Ruby 1.9.1 gem system
+  * Removed lame JSON-ifier from example and switched to require 'json' instead
+
+2010-01-19 (19 JAN 2010)  VERSION 3.0.1  Aaron D. Gifford (http://www.aarongifford.com/)
+  * Added support for '/tool/fetch' 'requesting' state
+  * Added auto-cancel of finished '/tool/fetch' command in MTik#command()
+  * Added MTik::Request#cancel() method
+  * Added MTik::Request#state() attr_reader (and new @state object property to replace
+    the @completed boolean property)
+  * MTik::Request objects now associate with the appropriate MTik::Connection object
+    upon MTik::Connection transmitting the request to a device (which facilities)
+    the MTik::Request@cancel() method
+  * Removed gem root directory mtik.rb file that was acting as a kludge for the author's
+    messed-up FreeBSD Ruby 1.9 installation
+  * Renamed examples with a 'tik' prefix
+
+2010-01-15 (15 JAN 2010)  VERSION 3.0.0  Aaron D. Gifford  (http://www.aarongifford.com/)
+  * Bumped the version to 3.0.0 due to modularization and gemification changes
+  that break any software using the older Ruby API classes.
+  * Split out (as separate files) and added a few more examples:
+      cli.rb
+      command.rb
+      json.rb
+      fetch.rb
+  * Added VERSION.txt, CHANGELOG.txt, README.txt, LICENSE.txt, and *.gemspec files, moved
+    the example files into the bin subdirectory
+
