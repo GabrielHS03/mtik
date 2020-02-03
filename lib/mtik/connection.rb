@@ -127,7 +127,7 @@ class MTik::Connection
       response  = Digest::MD5.hexdigest(0.chr + @pass + challenge)
 
       ## Send second /login command with our response:
-      reply = get_reply('/login', '=name=' + @user, '=response=00' + response)
+      reply = get_reply('/login', '=name=' + @user, '=password=' + @pass)
       if reply[0].key?('!trap')
         raise MTik::Error.new("Login failed: " + (reply[0].key?('message') ? reply[0]['message'] : 'Unknown error.'))
       end
